@@ -17,7 +17,7 @@ func NewMsgHandler()  siface.IMsgHandler{
 func (h *MsgHandler) DoMsgHandler(request siface.IRequest)  {
 		router,_ := h.GetRouter(request.GetMsgId())
 		m,_ :=router.GetMethod("a")
-		m.Call(request)
+		m.CallFunc(request)
 
 }
 

@@ -1,4 +1,4 @@
-package snet
+package packet
 
 import (
 	"bytes"

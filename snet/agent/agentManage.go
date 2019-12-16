@@ -1,4 +1,4 @@
-package snet
+package agent
 
 import (
 	"github.com/snail/siface"

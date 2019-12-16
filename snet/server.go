@@ -3,6 +3,7 @@ package snet
 import (
 	"github.com/snail/logger"
 	"github.com/snail/siface"
+	agent2 "github.com/snail/snet/agent"
 	"github.com/snail/util"
 	"go.uber.org/zap"
 	"log"
@@ -23,12 +24,12 @@ type Server struct {
 func NewServer(name,addr string) siface.IServer{
 	conf := util.LoadConfig("")
 	s := &Server{
-		Name: conf.Name,
-		Addr:conf.Addr,
-		MaxConn:conf.MaxConn,
-		MAxPacketSize:conf.MAxPacketSize,
-		msgHandler:NewMsgHandler(),
-		agentManage:NewAgentManage(),
+		Name:          conf.Name,
+		Addr:          conf.Addr,
+		MaxConn:       conf.MaxConn,
+		MAxPacketSize: conf.MAxPacketSize,
+		msgHandler:    NewMsgHandler(),
+		agentManage:   agent2.NewAgentManage(),
 	}
 
 
@@ -67,7 +68,7 @@ func (s *Server)Stop()  {
 }
 //  单个链接的生存周期
 func (s *Server)handler(conn net.Conn)  {
-	agent := NewAgent(conn,s.msgHandler)
+	agent := agent2.NewAgent(conn,s.msgHandler)
 	s.agentManage.Add(agent)
 	agent.Start()
 	agent.Stop()

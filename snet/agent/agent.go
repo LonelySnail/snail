@@ -1,9 +1,10 @@
-package snet
+package agent
 
 import (
 	"bufio"
 	"errors"
 	"github.com/snail/logger"
+	"github.com/snail/packet"
 	"github.com/snail/siface"
 	"go.uber.org/zap"
 	"io"
@@ -91,7 +92,7 @@ func (agent *Agent)readLoop ()  {
 	}()
 loop:
 	for !agent.isClose {
-		pack := NewPacket()
+		pack := packet.NewPacket()
 		head := make([]byte,pack.GetHeaderLen())
 		if _,err := io.ReadFull(agent.r,head);err != nil {
 			break loop
@@ -106,8 +107,8 @@ loop:
 		}
 		msg.SetData(data)
 		req := &Request{
-			agent:agent,
-			msg:msg,
+			agent: agent,
+			msg:   msg,
 		}
 		logger.ZapLog.Info("request",zap.String("req",string(req.msg.GetData())))
 		agent.handler.DoMsgHandler(req)
@@ -157,8 +158,8 @@ func (agent *Agent)SendMsg(id byte,data []byte)error  {
 	if agent.isClose {
 		return errors.New("connect is closed")
 	}
-	pack := NewPacket()
-	msg,err := pack.Pack(NewMsg(id,data))
+	pack := packet.NewPacket()
+	msg,err := pack.Pack(packet.NewMsg(id,data))
 	if err != nil {
 		return  err
 	}
