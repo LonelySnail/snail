@@ -14,18 +14,19 @@ type Method struct{
 
 type Args struct {
 	MsgId    byte
+	Name     string
 	Data 	 []byte
 }
 
-func (m *Method)CallFunc(request siface.IRequest)  {
+func (m *Method)CallFunc(agent siface.IAgent,args siface.IArgs)  {
 	if m.Go{
-		m.CallGo(request)
+		m.CallGo(agent,args)
 		return
 	}
-	m.Call(request)
+	m.Call(agent,args)
 }
 
-func (m *Method)Call(request siface.IRequest)  {
+func (m *Method)Call(agent siface.IAgent,args siface.IArgs)  {
 	defer func() {
 		if err := recover();err != nil {
 			buf := make([]byte, 1024)
@@ -35,17 +36,13 @@ func (m *Method)Call(request siface.IRequest)  {
 	}()
 	f := reflect.ValueOf(m.Func)
 	in := make([]reflect.Value,0)
-	args := &Args{
-		MsgId:request.GetMsgId(),
-		Data: request.GetData(),
-	}
-	in = append(in,reflect.ValueOf(request.GetAgent()))
+	in = append(in,reflect.ValueOf(agent))
 	in = append(in,reflect.ValueOf(args))
 
 	f.Call(in)
 }
 
-func (m *Method)CallGo(request siface.IRequest)  {
+func (m *Method)CallGo(agent siface.IAgent,args siface.IArgs)  {
 	defer func() {
 		if err := recover();err != nil {
 			buf := make([]byte, 1024)
@@ -55,11 +52,8 @@ func (m *Method)CallGo(request siface.IRequest)  {
 	}()
 	f := reflect.ValueOf(m.Func)
 	in := make([]reflect.Value,0)
-	args := &Args{
-		MsgId:request.GetMsgId(),
-		Data: request.GetData(),
-	}
-	in = append(in,reflect.ValueOf(request.GetAgent()))
+
+	in = append(in,reflect.ValueOf(agent))
 	in = append(in,reflect.ValueOf(args))
 
 	go f.Call(in)

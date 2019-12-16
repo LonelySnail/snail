@@ -1,9 +1,9 @@
 package siface
 
 type IRouter interface {
-	BeforeHandler(request IRequest)
-	Handler(request IRequest)
-	AfterHandler(request IRequest)
+	BeforeHandler()
+	Handler()
+	AfterHandler()
 	RegisterMethods()
 	GetMethod(name string)(IMethod,bool)
 }

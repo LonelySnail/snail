@@ -8,7 +8,7 @@ type IAgent interface {
 	GetConn() net.Conn
 	GetAgentId() uint32
 	RemoteAddr()  net.Addr
-	SendMsg(id byte,data []byte) error
+	SendMsg(id byte,name string,data []byte) error
 	SetProperty(key string,value interface{})
 	GetProperty(key string)(interface{},bool)
 	DelProperty(key string)

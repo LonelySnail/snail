@@ -7,7 +7,6 @@ import (
 	"github.com/snail/packet"
 	"github.com/snail/siface"
 	"go.uber.org/zap"
-	"io"
 	"net"
 	"runtime"
 	"sync"
@@ -32,8 +31,8 @@ func NewAgent(conn net.Conn,handler siface.IMsgHandler) siface.IAgent  {
 	agent := new(Agent)
 	agent.conn   = conn
 	agent.remoteAddr = conn.RemoteAddr()
-	agent.r  = bufio.NewReaderSize(conn,1024)
-	agent.w  = bufio.NewWriterSize(conn,1024)
+	agent.r  = bufio.NewReaderSize(conn,128)
+	agent.w  = bufio.NewWriterSize(conn,128)
 	agent.handler = handler
 	agent.msgChan = make(chan []byte,10)
 	agent.closeChan = make(chan bool,1)
@@ -93,25 +92,17 @@ func (agent *Agent)readLoop ()  {
 loop:
 	for !agent.isClose {
 		pack := packet.NewPacket()
-		head := make([]byte,pack.GetHeaderLen())
-		if _,err := io.ReadFull(agent.r,head);err != nil {
+
+		msg,err := pack.UnPack(agent.r)
+		if err != nil {
 			break loop
 		}
-		msg,err := pack.UnPack(head)
-		if err != nil || msg.GetDataLen() <=0 {
-			break loop
+
+		logger.ZapLog.Info("request",zap.String("req",string(msg.GetData())))
+		err = agent.handler.DoMsgHandler(agent,msg)
+		if err != nil {
+			logger.ZapLog.Info(err.Error())
 		}
-		data := make([]byte,msg.GetDataLen())
-		if _,err := io.ReadFull(agent.r,data);err != nil {
-			break loop
-		}
-		msg.SetData(data)
-		req := &Request{
-			agent: agent,
-			msg:   msg,
-		}
-		logger.ZapLog.Info("request",zap.String("req",string(req.msg.GetData())))
-		agent.handler.DoMsgHandler(req)
 	}
 	if !agent.isClose {
 		agent.closeChan <- true
@@ -147,7 +138,7 @@ loop:
 	return
 }
 
-func (agent *Agent)SendMsg(id byte,data []byte)error  {
+func (agent *Agent)SendMsg(id byte,name string,data []byte)error  {
 	defer func() {
 		if err := recover();err != nil {
 			buf := make([]byte, 1024)
@@ -159,7 +150,7 @@ func (agent *Agent)SendMsg(id byte,data []byte)error  {
 		return errors.New("connect is closed")
 	}
 	pack := packet.NewPacket()
-	msg,err := pack.Pack(packet.NewMsg(id,data))
+	msg,err := pack.Pack(packet.NewMsg(id,name,data))
 	if err != nil {
 		return  err
 	}

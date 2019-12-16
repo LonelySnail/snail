@@ -1,7 +1,9 @@
 package snet
 
 import (
+	"fmt"
 	"github.com/snail/siface"
+	"github.com/snail/snet/method"
 )
 
 type MsgHandler struct {
@@ -14,11 +16,22 @@ func NewMsgHandler()  siface.IMsgHandler{
 	}
 }
 
-func (h *MsgHandler) DoMsgHandler(request siface.IRequest)  {
-		router,_ := h.GetRouter(request.GetMsgId())
-		m,_ :=router.GetMethod("a")
-		m.CallFunc(request)
-
+func (h *MsgHandler) DoMsgHandler(agent siface.IAgent,msg siface.IMessage) error  {
+		router,ok := h.GetRouter(msg.GetMsgId())
+		if !ok {
+			return fmt.Errorf("msgId:%d is wrong",msg.GetMsgId())
+		}
+		m,ok :=router.GetMethod(msg.GetMethodName())
+		if !ok {
+			return fmt.Errorf("funcName:%s is wrong",msg.GetNameLen())
+		}
+		args := &method.Args{
+			MsgId:msg.GetMsgId(),
+			Name:msg.GetMethodName(),
+			Data: msg.GetData(),
+		}
+		m.CallFunc(agent,args)
+		return  nil
 }
 
 func (h *MsgHandler)AddRouter(id byte,router siface.IRouter)  {

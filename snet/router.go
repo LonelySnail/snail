@@ -18,15 +18,15 @@ func NewRouter() *BaseRouter {
 	}
 }
 
-func (r *BaseRouter)BeforeHandler(request siface.IRequest)  {
+func (r *BaseRouter)BeforeHandler()  {
 
 }
 
-func (r *BaseRouter)Handler(request siface.IRequest)  {
+func (r *BaseRouter)Handler()  {
 
 }
 
-func (r *BaseRouter)AfterHandler(request siface.IRequest)  {
+func (r *BaseRouter)AfterHandler()  {
 
 }
 
