@@ -24,8 +24,10 @@ type Server struct {
 func NewServer(name,addr string) siface.IServer{
 	conf := util.LoadConfig("")
 	s := &Server{
-		Name:          conf.Name,
-		Addr:          conf.Addr,
+		//Name:          conf.Name,
+		Name:         name,
+		//Addr:          conf.Addr,
+		Addr:         addr,
 		MaxConn:       conf.MaxConn,
 		MAxPacketSize: conf.MAxPacketSize,
 		msgHandler:    NewMsgHandler(),

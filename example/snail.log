@@ -1,0 +1,8 @@
+{"level":"info","time":"2019-12-17T10:14:21.653+0800","linenum":"D:/GoPath/src/github.com/snail/logger/zapLog.go:52","msg":"ZapLog success"}
+{"level":"info","time":"2019-12-17T10:14:21.660+0800","linenum":"D:/GoPath/src/github.com/snail/snet/server.go:49","msg":"server starting","addr":"192.168.1.225:9999"}
+{"level":"info","time":"2019-12-17T10:14:37.412+0800","linenum":"D:/GoPath/src/github.com/snail/snet/agent/agent.go:101","msg":"request","req":"Client0 Test Message"}
+{"level":"info","time":"2019-12-17T10:14:38.413+0800","linenum":"D:/GoPath/src/github.com/snail/snet/agent/agent.go:101","msg":"request","req":"Client0 Test Message"}
+{"level":"info","time":"2019-12-17T10:14:39.413+0800","linenum":"D:/GoPath/src/github.com/snail/snet/agent/agent.go:101","msg":"request","req":"Client0 Test Message"}
+{"level":"info","time":"2019-12-17T10:14:40.414+0800","linenum":"D:/GoPath/src/github.com/snail/snet/agent/agent.go:101","msg":"request","req":"Client0 Test Message"}
+{"level":"info","time":"2019-12-17T10:14:41.415+0800","linenum":"D:/GoPath/src/github.com/snail/snet/agent/agent.go:101","msg":"request","req":"Client0 Test Message"}
+{"level":"info","time":"2019-12-17T10:14:42.416+0800","linenum":"D:/GoPath/src/github.com/snail/snet/agent/agent.go:101","msg":"request","req":"Client0 Test Message"}

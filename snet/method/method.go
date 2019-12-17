@@ -1,6 +1,7 @@
 package method
 
 import (
+	"fmt"
 	"github.com/snail/siface"
 	"github.com/snail/logger"
 	"reflect"
@@ -20,12 +21,13 @@ type Args struct {
 
 func (m *Method)CallFunc(agent siface.IAgent,args siface.IArgs)  {
 	if m.Go{
-		m.CallGo(agent,args)
+		go m.Call(agent,args)
 		return
 	}
 	m.Call(agent,args)
 }
 
+// todo: 处理返回值
 func (m *Method)Call(agent siface.IAgent,args siface.IArgs)  {
 	defer func() {
 		if err := recover();err != nil {
@@ -39,7 +41,11 @@ func (m *Method)Call(agent siface.IAgent,args siface.IArgs)  {
 	in = append(in,reflect.ValueOf(agent))
 	in = append(in,reflect.ValueOf(args))
 
-	f.Call(in)
+	ret := f.Call(in)
+	if len(ret) == 0 {
+		return
+	}
+	fmt.Println(ret,"返回值")
 }
 
 func (m *Method)CallGo(agent siface.IAgent,args siface.IArgs)  {
